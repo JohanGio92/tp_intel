@@ -11,11 +11,6 @@ segment code
     mov ax,pila
     mov ss,ax
 
-    mov dx,filename
-    mov al,0
-    mov ah,3dh
-    int 21h
-
 
 fin:
     mov ax,4c00h
