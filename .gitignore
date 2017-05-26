@@ -1,4 +1,4 @@
-**/*.exe
-**/*.EXE
-**/*.obj
-**/*.OBJ
+*.exe
+*.EXE
+*.obj
+*.OBJ
