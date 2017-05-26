@@ -2,8 +2,11 @@ segment pila stack
     resb 64
 
 segment datos data
-filename:   db  'history.txt',0
 errormsg:   db  'Error al abrir el archivo. Saliendo.$'
+buffer:     db  255
+            db  0
+filename:   resb 256
+            db   0dh
 fileHandle: resw 1
 fileBuffer: resb 1
 
@@ -13,10 +16,26 @@ segment code
     mov     ds,ax
     mov     ax,pila
     mov     ss,ax
+    call    getFilename
     call    fOpen
     call    loopOverFile
     call    fClose
     jmp     fin
+
+getFilename:
+    mov     dx,buffer
+    mov     ah,0ah
+    int     21h
+    mov     ax,0
+    mov     al,[filename-1]
+    mov     si,ax
+    mov     byte[filename+si],'$'
+    mov     ax,filename
+    mov     dx,ax
+    mov     ah,9
+    int     21h
+
+    ret
 
 loopOverFile:
     mov     bx,[fileHandle]
