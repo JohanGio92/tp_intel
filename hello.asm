@@ -16,6 +16,7 @@ segment code
     mov     ds,ax
     mov     ax,pila
     mov     ss,ax
+
     call    getFilename
     call    fOpen
     call    loopOverFile
@@ -29,12 +30,7 @@ getFilename:
     mov     ax,0
     mov     al,[filename-1]
     mov     si,ax
-    mov     byte[filename+si],'$'
-    mov     ax,filename
-    mov     dx,ax
-    mov     ah,9
-    int     21h
-
+    mov     byte[filename+si],0
     ret
 
 loopOverFile:
