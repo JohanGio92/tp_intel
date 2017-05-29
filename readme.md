@@ -18,6 +18,10 @@ cwsdpmi.exe -p
 alink.exe -oEXE -o tp.exe tp.obj
 ```
 
+### Supuestos:
+El enunciado es ambiguo en qué método de ordenamiento usar, ya que indica usar un burbujeo optimizado, pero el código se corresponde con un ordenamiento por selección.
+Opto por implementar este último, ya que considero 
+
 ---
 Realizado por Juan Pablo Capurro
 

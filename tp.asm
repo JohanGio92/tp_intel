@@ -2,22 +2,27 @@ segment pila stack
     resb 4096
 
 segment datos data
-errormsg:   db  'Error al abrir el archivo. Saliendo.$'
-pedirFilenameMsg: db 'Ingrese el nombre del archivo: $'
-fNamebuffer:db  255
-            db  0
-filename:   resb 256
-            db   0dh
-fileHandle: resw 1
-fileBuffer: resb 1
+errormsg:           db  'Error al abrir el archivo. Saliendo.$'
+pedirFilenameMsg:   db 'Ingrese el nombre del archivo: $'
+askShowIntermediatesMsg: db 'Ingrese S si quiere ver los pasos intermedios, otro caracter en caso contrario: $'
+fNamebuffer:        db  255
+                    db  0
+filename:           resb 256
+                    db   0dh
+fileHandle:         resw 1
+fileBuffer:         resb 1
 
-vectorLength: resw 1
-vector:     times 256 resw 1
-vectorIndex:resw 1
+vectorLength:       resw 1
+vector:             times 256 resw 1
+vectorIndex:        resw 1
+otherVectorIndex:   resw 1
+comparator:         resw 1
 
-base10:     dw 10;
-bpfToShow:  resw 1
-asciiRep:   times 8 resb 1
+base10:             dw 10;
+bpfToShow:          resw 1
+asciiRep:           times 8 resb 1
+
+showIntermediates:  resb 1
 
 segment code
 ..start:
@@ -27,11 +32,61 @@ segment code
     mov     ss,ax
 
     call    getFilename
+    call    getShowIntermediates
     call    fOpen
     call    loadFile
+
     call    showVector
+    call    sortVector
+    call    showVector
+
     call    fClose
     jmp     fin
+
+sortVector:
+    mov     word[vectorIndex],0
+    outerLoop:
+    mov     ax,word[vectorIndex]
+    mov     word[otherVectorIndex],ax
+    innerLoop:
+    mov     ax,[otherVectorIndex]
+    mov     si,ax
+    mov     ax,[vector+si]
+    mov     [comparator],ax
+    mov     ax,vector
+    add     ax,si
+    mov     bx,ax
+    mov     ax,[vectorIndex]
+    mov     si,ax
+    mov     ax,[vector+si]
+    cmp     ax,[comparator];en ax esta v[i],
+    jl      noSwap
+    mov     [bx],ax
+    mov     ax,[comparator]
+    mov     [vector+si],ax
+    call    printNewline
+    noSwap:
+
+    inc     word[otherVectorIndex]
+    mov     ax,otherVectorIndex
+    cmp     ax,[vectorLength]
+    jl      innerLoop
+
+    inc     word[vectorIndex]
+    mov     ax,[vectorIndex]
+    cmp     ax,[vectorLength]
+    jl      outerLoop
+    ret
+
+getShowIntermediates:
+    mov     dx,askShowIntermediatesMsg
+    mov     ah,9
+    int     21h
+    mov     ah,1
+    int     21h
+    mov     [showIntermediates],al
+    call    printNewline
+    ret
 
 getFilename:
     mov     dx,pedirFilenameMsg
@@ -61,12 +116,7 @@ showVector:
     mov     ax,[vectorIndex]
     cmp     ax,[vectorLength]
     jl      loopOverVector
-    mov     dl,0dh;\r
-    mov     ah,2
-    int     21h
-    mov     dl,0ah;\n
-    mov     ah,2
-    int     21h
+    call    printNewline
     ret
 
 showBpf:
@@ -140,6 +190,15 @@ fOpen:
 fClose:
     mov     bx,[fileHandle]
     mov     ah,3eh
+    int     21h
+    ret
+
+printNewline:
+    mov     dl,0dh;\r
+    mov     ah,2
+    int     21h
+    mov     dl,0ah;\n
+    mov     ah,2
     int     21h
     ret
 
