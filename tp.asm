@@ -2,32 +2,31 @@ segment pila stack
     resb 4096
 
 segment datos data
-errormsg:           db  'Error al abrir el archivo. Saliendo.$'
-pedirFilenameMsg:   db 'Ingrese el nombre del archivo: $'
-askShowIntermediatesMsg: db 'Ingrese s si quiere ver los pasos intermedios, otro caracter en caso contrario: $'
-askAscendentMsg:    db 'Ingrese a si quiere ordenar crecientemente, otro caracter en caso contrario: $'
-fNamebuffer:        db  255
-                    db  0
-filename:           resb 256
-                    db   0dh
-fileHandle:         resw 1
-fileBuffer:         resb 1
+    errormsg:           db  'Error al abrir el archivo. Saliendo.$'
+    pedirFilenameMsg:   db 'Ingrese el nombre del archivo: $'
+    askShowIntermediatesMsg: db 'Ingrese s si quiere ver los pasos intermedios, otro caracter en caso contrario: $'
+    askAscendentMsg:    db 'Ingrese a si quiere ordenar crecientemente, otro caracter en caso contrario: $'
+    fNamebuffer:        db  255
+                        db  0
+    filename:           resb 256
+                        db   0dh
+    fileHandle:         resw 1
+    fileBuffer:         resb 1
 
-vectorLength:       resw 1
-vector:             times 256 resw 1
-vectorIndex:        resw 1
-otherVectorIndex:   resw 1
+    vectorLength:       resw 1
+    vector:             times 256 resw 1
+    vectorIndex:        resw 1
 
-base10:             dw 10;
-bpfToShow:          resw 1
-asciiRep:           times 8 resb 1
+    base10:             dw 10;
+    bpfToShow:          resw 1
+    asciiRep:           times 8 resb 1
 
-showIntermediates:  resb 1
-ascendent:          resb 1
-;variables usadas en el sort
-indexI:             resw 1
-indexJ:             resw 1
-comparator:         resw 1
+    showIntermediates:  resb 1
+    ascendent:          resb 1
+    ;variables usadas en el sort
+    indexI:             resw 1
+    indexJ:             resw 1
+    comparator:         resw 1
 
 segment code
 ..start:
@@ -41,6 +40,7 @@ segment code
     call    getAscendent
     call    fOpen
     call    loadFile
+    call    fClose
 
     call    showVector
     call    printNewline
@@ -48,7 +48,6 @@ segment code
     call    printNewline
     call    showVector
 
-    call    fClose
     jmp     fin
 
 sortVector:
@@ -69,14 +68,10 @@ sortVector:
             mov     ax,[vector+si]
             cmp     byte[ascendent],'a'
             je      compareLE
-            cmp     ax,[comparator];en ax esta v[i],
-            jge     noSwap
-            mov     [bx],ax
-            mov     ax,[comparator]
-            mov     [vector+si],ax
-            jmp     noSwap
-            compareLE:
-            cmp     ax,[comparator];en ax esta v[i],
+            cmp     ax,[comparator] ;en ax esta v[i],
+            jge     noSwap          ;comparo por mayor o igual para ordenar decrecientemente
+            compareLE:              ;comparo por menor o igual para ordenar crecientemente
+            cmp     ax,[comparator]
             jle     noSwap
             mov     [bx],ax
             mov     ax,[comparator]
@@ -90,9 +85,9 @@ sortVector:
             jl      innerLoop
 
         cmp     byte[showIntermediates],'s'
-        jne     noshow
+        jne     noShow
         call    showVector
-        noshow:
+        noShow:
 
         inc     word[indexI]
         inc     word[indexI]
