@@ -38,6 +38,7 @@ segment code
 
     call    showVector
     call    sortVector
+    call    printNewline
     call    showVector
 
     call    fClose
@@ -60,16 +61,17 @@ sortVector:
             mov     si,ax
             mov     ax,[vector+si]
             cmp     ax,[comparator];en ax esta v[i],
-            jle     noSwap
+            jge     noSwap
             mov     [bx],ax
             mov     ax,[comparator]
             mov     [vector+si],ax
-            call    printNewline
+            mov     [bpfToShow],ax
+            call    showBpf
             noSwap:
 
             inc     word[otherVectorIndex]
             inc     word[otherVectorIndex]
-            mov     ax,otherVectorIndex
+            mov     ax,[otherVectorIndex]
             cmp     ax,[vectorLength]
             jl      innerLoop
 
