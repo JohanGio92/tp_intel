@@ -45,37 +45,39 @@ segment code
 
 sortVector:
     mov     word[vectorIndex],0
-    outerLoop:
-    mov     ax,word[vectorIndex]
-    mov     word[otherVectorIndex],ax
-    innerLoop:
-    mov     ax,[otherVectorIndex]
-    mov     si,ax
-    mov     ax,[vector+si]
-    mov     [comparator],ax
-    mov     ax,vector
-    add     ax,si
-    mov     bx,ax
-    mov     ax,[vectorIndex]
-    mov     si,ax
-    mov     ax,[vector+si]
-    cmp     ax,[comparator];en ax esta v[i],
-    jl      noSwap
-    mov     [bx],ax
-    mov     ax,[comparator]
-    mov     [vector+si],ax
-    call    printNewline
-    noSwap:
+        outerLoop:
+        mov     ax,word[vectorIndex]
+        mov     word[otherVectorIndex],ax
+            innerLoop:
+            mov     ax,[otherVectorIndex]
+            mov     si,ax
+            mov     ax,[vector+si]
+            mov     [comparator],ax
+            mov     ax,vector
+            add     ax,si
+            mov     bx,ax
+            mov     ax,[vectorIndex]
+            mov     si,ax
+            mov     ax,[vector+si]
+            cmp     ax,[comparator];en ax esta v[i],
+            jle     noSwap
+            mov     [bx],ax
+            mov     ax,[comparator]
+            mov     [vector+si],ax
+            call    printNewline
+            noSwap:
 
-    inc     word[otherVectorIndex]
-    mov     ax,otherVectorIndex
-    cmp     ax,[vectorLength]
-    jl      innerLoop
+            inc     word[otherVectorIndex]
+            inc     word[otherVectorIndex]
+            mov     ax,otherVectorIndex
+            cmp     ax,[vectorLength]
+            jl      innerLoop
 
-    inc     word[vectorIndex]
-    mov     ax,[vectorIndex]
-    cmp     ax,[vectorLength]
-    jl      outerLoop
+        inc     word[vectorIndex]
+        inc     word[vectorIndex]
+        mov     ax,[vectorIndex]
+        cmp     ax,[vectorLength]
+        jl      outerLoop
     ret
 
 getShowIntermediates:
@@ -105,18 +107,18 @@ showVector:
     mov     si,0
     mov     ax,0
     mov     [vectorIndex],ax
-    loopOverVector:
-    mov     ax,[vectorIndex]
-    mov     si,ax
-    mov     ax,[vector+si]
-    mov     [bpfToShow],ax
-    inc     si
-    inc     si
-    mov     [vectorIndex],si
-    call    showBpf
-    mov     ax,[vectorIndex]
-    cmp     ax,[vectorLength]
-    jl      loopOverVector
+        loopOverVector:
+        mov     ax,[vectorIndex]
+        mov     si,ax
+        mov     ax,[vector+si]
+        mov     [bpfToShow],ax
+        inc     si
+        inc     si
+        mov     [vectorIndex],si
+        call    showBpf
+        mov     ax,[vectorIndex]
+        cmp     ax,[vectorLength]
+        jl      loopOverVector
     call    printNewline
     ret
 
@@ -131,15 +133,15 @@ showBpf:
     convertToStr:
     mov     ax,[bpfToShow]
     mov     si,5
-    loopOverNumber:
-    mov     dx,0
-    div     word[base10]
-    mov     byte[asciiRep+si],dl
-    add     byte[asciiRep+si],'0'
-    dec     si
-    cmp     si,0
-    je      conversionEnd
-    jmp     loopOverNumber
+        loopOverNumber:
+        mov     dx,0
+        div     word[base10]
+        mov     byte[asciiRep+si],dl
+        add     byte[asciiRep+si],'0'
+        dec     si
+        cmp     si,0
+        je      conversionEnd
+        jmp     loopOverNumber
     conversionEnd:
     mov     byte[asciiRep+6],' '
     mov     byte[asciiRep+7],'$'
@@ -148,28 +150,25 @@ showBpf:
     int     21h
     ret
 
-
-    ret
-
 loadFile:
     mov     ax,0
     mov     si,ax
-    loopFile:
-    mov     bx,[fileHandle]
-    mov     cx,2
-    mov     dx,fileBuffer
-    mov     ah,3fh
-    int     21h
-    jc      fileError   ;no es error al abrir pero xd
-    cmp     ax,2
-    jne     onEOF
-    mov     ax,vector
-    mov     bx,ax
-    mov     ax,[fileBuffer]
-    mov     [bx+si],ax
-    inc     si
-    inc     si
-    jmp     loopFile
+        loopFile:
+        mov     bx,[fileHandle]
+        mov     cx,2
+        mov     dx,fileBuffer
+        mov     ah,3fh
+        int     21h
+        jc      fileError   ;no es error al abrir pero xd
+        cmp     ax,2
+        jne     onEOF
+        mov     ax,vector
+        mov     bx,ax
+        mov     ax,[fileBuffer]
+        mov     [bx+si],ax
+        inc     si
+        inc     si
+        jmp     loopFile
     onEOF:
     mov     [vectorLength],si
     ret
