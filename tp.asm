@@ -111,6 +111,7 @@ showVector:
     mov     ax,[vector+si]
     mov     [bpfToShow],ax
     inc     si
+    inc     si
     mov     [vectorIndex],si
     call    showBpf
     mov     ax,[vectorIndex]
@@ -166,6 +167,7 @@ loadFile:
     mov     bx,ax
     mov     ax,[fileBuffer]
     mov     [bx+si],ax
+    inc     si
     inc     si
     jmp     loopFile
     onEOF:
