@@ -8,7 +8,7 @@ Aprovecho el hecho de que tanto la arquitectura de mi computadora como la
 que emulo en DOSbox son little endian para generar archivos como los que
 especifica el enunciado.
 */
-const size_t LARGO_ARCHIVO = 4;
+const size_t LARGO_ARCHIVO = 10;
 const char* NOMBRE_ARCHIVO = "file.bpf";
 const size_t BITS_PER_FIELD =16;
 const size_t BYTES_PER_FIELD =2;

@@ -5,6 +5,7 @@ segment datos data
 errormsg:           db  'Error al abrir el archivo. Saliendo.$'
 pedirFilenameMsg:   db 'Ingrese el nombre del archivo: $'
 askShowIntermediatesMsg: db 'Ingrese s si quiere ver los pasos intermedios, otro caracter en caso contrario: $'
+askAscendentMsg:    db 'Ingrese a si quiere ordenar crecientemente, otro caracter en caso contrario: $'
 fNamebuffer:        db  255
                     db  0
 filename:           resb 256
@@ -22,6 +23,7 @@ bpfToShow:          resw 1
 asciiRep:           times 8 resb 1
 
 showIntermediates:  resb 1
+ascendent:          resb 1
 ;variables usadas en el sort
 indexI:             resw 1
 indexJ:             resw 1
@@ -36,11 +38,14 @@ segment code
 
     call    getFilename
     call    getShowIntermediates
+    call    getAscendent
     call    fOpen
     call    loadFile
 
     call    showVector
+    call    printNewline
     call    sortVector
+    call    printNewline
     call    showVector
 
     call    fClose
@@ -62,8 +67,17 @@ sortVector:
             mov     ax,[indexI]
             mov     si,ax
             mov     ax,[vector+si]
+            cmp     byte[ascendent],'a'
+            je      compareLE
             cmp     ax,[comparator];en ax esta v[i],
             jge     noSwap
+            mov     [bx],ax
+            mov     ax,[comparator]
+            mov     [vector+si],ax
+            jmp     noSwap
+            compareLE:
+            cmp     ax,[comparator];en ax esta v[i],
+            jle     noSwap
             mov     [bx],ax
             mov     ax,[comparator]
             mov     [vector+si],ax
@@ -97,6 +111,16 @@ getShowIntermediates:
     call    printNewline
     ret
 
+getAscendent:
+    mov     dx,askAscendentMsg
+    mov     ah,9
+    int     21h
+    mov     ah,1
+    int     21h
+    mov     [ascendent],al
+    call    printNewline
+    ret
+
 getFilename:
     mov     dx,pedirFilenameMsg
     mov     ah,9
@@ -108,6 +132,7 @@ getFilename:
     mov     al,[filename-1]
     mov     si,ax
     mov     byte[filename+si],0
+    call    printNewline
     ret
 
 showVector:
