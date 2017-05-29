@@ -4,7 +4,7 @@ segment pila stack
 segment datos data
 errormsg:           db  'Error al abrir el archivo. Saliendo.$'
 pedirFilenameMsg:   db 'Ingrese el nombre del archivo: $'
-askShowIntermediatesMsg: db 'Ingrese S si quiere ver los pasos intermedios, otro caracter en caso contrario: $'
+askShowIntermediatesMsg: db 'Ingrese s si quiere ver los pasos intermedios, otro caracter en caso contrario: $'
 fNamebuffer:        db  255
                     db  0
 filename:           resb 256
@@ -16,13 +16,16 @@ vectorLength:       resw 1
 vector:             times 256 resw 1
 vectorIndex:        resw 1
 otherVectorIndex:   resw 1
-comparator:         resw 1
 
 base10:             dw 10;
 bpfToShow:          resw 1
 asciiRep:           times 8 resb 1
 
 showIntermediates:  resb 1
+;variables usadas en el sort
+indexI:             resw 1
+indexJ:             resw 1
+comparator:         resw 1
 
 segment code
 ..start:
@@ -38,26 +41,25 @@ segment code
 
     call    showVector
     call    sortVector
-    call    printNewline
     call    showVector
 
     call    fClose
     jmp     fin
 
 sortVector:
-    mov     word[vectorIndex],0
+    mov     word[indexI],0
         outerLoop:
-        mov     ax,word[vectorIndex]
-        mov     word[otherVectorIndex],ax
+        mov     ax,word[indexI]
+        mov     word[indexJ],ax
             innerLoop:
-            mov     ax,[otherVectorIndex]
+            mov     ax,[indexJ]
             mov     si,ax
             mov     ax,[vector+si]
             mov     [comparator],ax
             mov     ax,vector
             add     ax,si
             mov     bx,ax
-            mov     ax,[vectorIndex]
+            mov     ax,[indexI]
             mov     si,ax
             mov     ax,[vector+si]
             cmp     ax,[comparator];en ax esta v[i],
@@ -65,19 +67,22 @@ sortVector:
             mov     [bx],ax
             mov     ax,[comparator]
             mov     [vector+si],ax
-            mov     [bpfToShow],ax
-            call    showBpf
             noSwap:
 
-            inc     word[otherVectorIndex]
-            inc     word[otherVectorIndex]
-            mov     ax,[otherVectorIndex]
+            inc     word[indexJ]
+            inc     word[indexJ]
+            mov     ax,[indexJ]
             cmp     ax,[vectorLength]
             jl      innerLoop
 
-        inc     word[vectorIndex]
-        inc     word[vectorIndex]
-        mov     ax,[vectorIndex]
+        cmp     byte[showIntermediates],'s'
+        jne     noshow
+        call    showVector
+        noshow:
+
+        inc     word[indexI]
+        inc     word[indexI]
+        mov     ax,[indexI]
         cmp     ax,[vectorLength]
         jl      outerLoop
     ret
