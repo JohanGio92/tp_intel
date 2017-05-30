@@ -5,7 +5,7 @@ segment datos data
     errormsg:           db  'Error al abrir el archivo. Saliendo.$'
     pedirFilenameMsg:   db 'Ingrese el nombre del archivo: $'
     askShowIntermediatesMsg: db 'Ingrese s si quiere ver los pasos intermedios, otro caracter en caso contrario: $'
-    askAscendentMsg:    db 'Ingrese a si quiere ordenar crecientemente, otro caracter en caso contrario: $'
+    askascendantMsg:    db 'Ingrese a si quiere ordenar ascendantemente, otro caracter en caso contrario: $'
     fNamebuffer:        db  255
                         db  0
     filename:           resb 256
@@ -22,7 +22,7 @@ segment datos data
     asciiRep:           times 8 resb 1
 
     showIntermediates:  resb 1
-    ascendent:          resb 1
+    ascendant:          resb 1
     ;variables usadas en el sort
     indexI:             resw 1
     indexJ:             resw 1
@@ -36,11 +36,11 @@ segment code
     mov     ss,ax
 
     call    getFilename
-    call    getShowIntermediates
-    call    getAscendent
     call    fOpen
     call    loadFile
     call    fClose
+    call    getShowIntermediates
+    call    getascendant
 
     call    showVector
     call    printNewline
@@ -66,13 +66,17 @@ sortVector:
             mov     ax,[indexI]
             mov     si,ax
             mov     ax,[vector+si]
-            cmp     byte[ascendent],'a'
-            je      compareLE
-            cmp     ax,[comparator] ;en ax esta v[i],
-            jge     noSwap          ;comparo por mayor o igual para ordenar decrecientemente
-            compareLE:              ;comparo por menor o igual para ordenar crecientemente
-            cmp     ax,[comparator]
+            cmp     byte[ascendant],'a'
+            jne     compareGE
+            cmp     ax,[comparator] ;caso descendente
             jle     noSwap
+            mov     [bx],ax
+            mov     ax,[comparator] ;esto repite codigo pero me parece mucho
+            mov     [vector+si],ax  ;mas legible que el spaghetti necesario
+            jmp     noSwap          ;para no repetir el swap
+            compareGE:
+            cmp     ax,[comparator] ;caso ascendiente
+            jge     noSwap
             mov     [bx],ax
             mov     ax,[comparator]
             mov     [vector+si],ax
@@ -106,13 +110,13 @@ getShowIntermediates:
     call    printNewline
     ret
 
-getAscendent:
-    mov     dx,askAscendentMsg
+getascendant:
+    mov     dx,askascendantMsg
     mov     ah,9
     int     21h
     mov     ah,1
     int     21h
-    mov     [ascendent],al
+    mov     [ascendant],al
     call    printNewline
     ret
 

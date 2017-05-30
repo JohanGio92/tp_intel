@@ -20,7 +20,15 @@ alink.exe -oEXE -o tp.exe tp.obj
 
 ### Supuestos:
 El enunciado es ambiguo en qué método de ordenamiento usar, ya que indica usar un burbujeo optimizado, pero el código se corresponde con un ordenamiento por selección.
-Opto por implementar este último, ya que considero 
+Opto por implementar este último, por considerar el código propuesto como instrucciones más claras que un simple nombre.
+
+### Sobre la generacion de archivos de prueba
+Para generar los archivos con los cuales probar el programa, creé un programa en C que puede ser compilado con:
+```
+gcc -std=c99 -Wall -Wconversion generador_numeros.c -o generador_numeros
+```
+No recibe argumentos, y el largo del archivo está como una constante dentro del código.
+Genera un archivo con la cantidad indicada de bpfs de 16 bits, elegidos aleatoriamente.
 
 ---
 Realizado por Juan Pablo Capurro

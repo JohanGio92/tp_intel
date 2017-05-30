@@ -19,7 +19,7 @@ int main(){
     if(!archivo)
         return -1;
     for(size_t i =0;i<LARGO_ARCHIVO;i++){
-        int16_t valor = (int16_t) (rand()%(2*INT16_MAX))-INT16_MAX;
+        int16_t valor = (int16_t) ((rand()%(2*INT16_MAX))-INT16_MAX);
         printf("%"PRId16,valor);
         fwrite(&valor,BYTES_PER_FIELD,1,archivo);
         puts("");
