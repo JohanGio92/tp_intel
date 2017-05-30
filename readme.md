@@ -22,6 +22,8 @@ alink.exe -oEXE -o tp.exe tp.obj
 El enunciado es ambiguo en qué método de ordenamiento usar, ya que indica usar un burbujeo optimizado, pero el código se corresponde con un ordenamiento por selección.
 Opto por implementar este último, por considerar el código propuesto como instrucciones más claras que un simple nombre.
 
+Por otra parte, interpreto que el programa debe mostrar los contenidos del archivo ordenado, en el sentido de que lee el archivo y ordena el contenido del mismo pero no guarda dicho contenido ordenado sobreescribiendo el archivo, ni guardándolo en otro.
+
 ### Sobre la generacion de archivos de prueba
 Para generar los archivos con los cuales probar el programa, creé un programa en C que puede ser compilado con:
 ```
