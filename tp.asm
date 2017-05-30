@@ -5,7 +5,7 @@ segment datos data
     errormsg:           db  'Error al abrir el archivo. Saliendo.$'
     pedirFilenameMsg:   db 'Ingrese el nombre del archivo: $'
     askShowIntermediatesMsg: db 'Ingrese s si quiere ver los pasos intermedios, otro caracter en caso contrario: $'
-    askascendantMsg:    db 'Ingrese a si quiere ordenar ascendantemente, otro caracter en caso contrario: $'
+    askAscendingMsg:    db 'Ingrese a si quiere ordenar ascendientemente, otro caracter en caso contrario: $'
     fNamebuffer:        db  255
                         db  0
     filename:           resb 256
@@ -22,7 +22,7 @@ segment datos data
     asciiRep:           times 8 resb 1
 
     showIntermediates:  resb 1
-    ascendant:          resb 1
+    ascending:          resb 1
     ;variables usadas en el sort
     indexI:             resw 1
     indexJ:             resw 1
@@ -40,7 +40,7 @@ segment code
     call    loadFile
     call    fClose
     call    getShowIntermediates
-    call    getascendant
+    call    getAscending
 
     call    showVector
     call    printNewline
@@ -66,7 +66,7 @@ sortVector:
             mov     ax,[indexI]
             mov     si,ax
             mov     ax,[vector+si]
-            cmp     byte[ascendant],'a'
+            cmp     byte[ascending],'a'
             jne     compareGE
             cmp     ax,[comparator] ;caso descendente
             jle     noSwap
@@ -110,13 +110,13 @@ getShowIntermediates:
     call    printNewline
     ret
 
-getascendant:
-    mov     dx,askascendantMsg
+getAscending:
+    mov     dx,askAscendingMsg
     mov     ah,9
     int     21h
     mov     ah,1
     int     21h
-    mov     [ascendant],al
+    mov     [ascending],al
     call    printNewline
     ret
 
