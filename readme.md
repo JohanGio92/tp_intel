@@ -17,6 +17,8 @@ c:
 cwsdpmi.exe -p
 alink.exe -oEXE -o tp.exe tp.obj
 ```
+Para poder enviar el comprimido por Gmail, tuve que quitarle la extensión `.exe` a los ejecutables.
+Al volver a agregársela deberían funcionar sin problemas, basta con ejecutar `mv ALINK ALINK.EXE && mv cwsdpmi cwsdpmi.exe && mv RSX RSX.EXE`
 
 ### Supuestos:
 El enunciado es ambiguo en qué método de ordenamiento usar, ya que indica usar un burbujeo optimizado, pero el código se corresponde con un ordenamiento por selección.
