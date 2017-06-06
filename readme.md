@@ -30,7 +30,7 @@ Para generar los archivos con los cuales probar el programa, creé un programa e
 gcc -std=c99 -Wall -Wconversion generador_numeros.c -o generador_numeros
 ```
 No recibe argumentos, y el largo del archivo está como una constante dentro del código.
-Genera un archivo con la cantidad indicada de bpfs de 16 bits, elegidos aleatoriamente.
+Genera un archivo con la cantidad indicada de bpfs de 16 bits, elegidos aleatoriamente, y tambien los muestra por pantalla.
 
 ---
 Realizado por Juan Pablo Capurro

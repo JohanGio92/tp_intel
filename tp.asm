@@ -190,7 +190,7 @@ loadFile:
         mov     dx,fileBuffer
         mov     ah,3fh
         int     21h
-        jc      fileError   ;no es error al abrir pero xd
+        jc      fileError   ;no es error al abrir pero sirve
         cmp     ax,2
         jne     onEOF
         mov     ax,vector
